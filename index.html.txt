@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio de Rubén Mendoza | Ingeniería Mecánica</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Importar Fuente Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        
+        /* Definición de variables CSS para los temas */
+        :root {
+            /* Modo Oscuro (Default) */
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #181818;
+            --text-primary: #E5E7EB;
+            --text-secondary: #DC2626; /* Rojo de acento */
+            --border-color: #374151; /* Gris 700 */
+            --header-bg: rgba(10, 10, 10, 0.95);
+        }
+
+        .light-mode {
+            /* Modo Claro */
+            --bg-primary: #F3F4F6; /* Gris muy claro */
+            --bg-secondary: #FFFFFF;
+            --text-primary: #1F2937; /* Gris Oscuro */
+            --text-secondary: #B91C1C; /* Rojo de acento oscuro */
+            --border-color: #D1D5DB; /* Gris 300 */
+            --header-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Estilos Generales */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Estilo de la cabecera fija con transparencia */
+        header {
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* INDICADOR DE SCROLL */
+        #scroll-progress {
+            position: fixed;
+            top: 56px; /* Justo debajo del header */
+            left: 0;
+            height: 4px;
+            background-color: var(--text-secondary);
+            z-index: 20;
+            width: 0;
+            transition: none; /* Desactivamos la transición para que sea inmediato */
+        }
+        /* --- ESTILOS DE VALIDACIÓN Y MENSAJES --- */
+        .message-box {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease-in-out;
+            padding: 0 12px;
+        }
+        .message-box.visible {
+            opacity: 1;
+            max-height: 50px;
+            margin-top: 16px;
+            padding: 8px 12px;
+        }
+
+        .error-span {
+            display: none;
+            color: #EF4444; 
+            font-size: 0.875rem;
+            margin-top: 4px;
+            margin-left: 4px; 
+            font-weight: 500;
+        }
+        
+        /* Estilos del Modal */
+        .ventana-modal {
+            background-color: rgba(0, 0, 0, 0.75);
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .ventana-modal.abierto {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-contenido {
+            background-color: var(--bg-secondary);
+            transform: translateY(-50px);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .ventana-modal.abierto .modal-contenido {
+            transform: translateY(0);
+        }
+
+        /* Estilos para las barras de habilidad */
+        .skill-bar {
+            height: 10px;
+            border-radius: 9999px; /* rounded-full */
+            background-color: var(--border-color);
+            overflow: hidden;
+        }
+        
+        .skill-level {
+            height: 100%;
+            background-color: var(--text-secondary);
+            transition: width 1s ease-out;
+        }
+        
+        /* --- ESTILOS DE CRONOLOGÍA (Timeline) --- */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 3px;
+            background-color: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 32px;
+            padding-left: 20px;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--text-secondary);
+            left: -4.5px;
+            top: 0;
+            border: 2px solid var(--bg-primary); /* Para que el punto destaque en el fondo */
+            box-shadow: 0 0 0 3px var(--bg-primary);
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+    <!-- INDICADOR DE SCROLL -->
+    <div id="scroll-progress"></div>
+
+    <!-- Cabecera (Fixed) -->
+    <header class="fixed top-0 left-0 right-0 z-10 py-4 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <!-- El enlace # es el que se usa para volver arriba -->
+            <a href="#hero" class="text-2xl font-extrabold text-white transition-colors duration-200" style="color: var(--text-secondary);">Rúben Mendoza</a>
+            <nav id="main-nav" class="hidden md:flex space-x-6">
+                <!-- ENLACES DE NAVEGACIÓN -->
+                <a href="#hero" class="nav-link hover:text-gray-300 transition-colors duration-200">Inicio</a>
+                <a href="#sobre-mi" class="nav-link hover:text-gray-300 transition-colors duration-200">Sobre Mí</a>
+                <a href="#experiencia" class="nav-link hover:text-gray-300 transition-colors duration-200">Experiencia</a> <!-- Nuevo enlace -->
+                <a href="#habilidades" class="nav-link hover:text-gray-300 transition-colors duration-200">Habilidades</a>
+                <a href="#proyectos" class="nav-link hover:text-gray-300 transition-colors duration-200">Proyectos</a>
+                <a href="#calculadora" class="nav-link hover:text-gray-300 transition-colors duration-200">Cálculo σ</a>
+                <a href="#contacto" class="nav-link hover:text-gray-300 transition-colors duration-200">Contacto</a>
+            </nav>
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-800 transition duration-200">
+                <!-- Iconos de sol/luna SVG -->
+                <svg id="moon-icon" class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 8.948 8.948 0 0012 21a9 9 0 008.354-5.646z"></path></svg>
+                <svg id="sun-icon" class="w-6 h-6 text-yellow-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="pt-24 max-w-6xl mx-auto px-6 md:px-12">
+        
+        <!-- Sección Hero / Introducción -->
+        <section id="hero" class="py-24 md:py-40 text-center rounded-xl relative overflow-hidden" 
+                 style="background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);">
+            
+            <!-- Patrón de fondo sutil con SVG (engranajes) -->
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%23374151" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20v-6h4v6a2 2 0 002 2h2v-2.172a2 2 0 00-.586-1.414L15 14h-3L7.414 17.414A2 2 0 007 18.828V20h2a2 2 0 002-2zM4 10a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z"></path></svg>'); background-size: 50px;"></div>
+
+            <div class="relative z-10">
+                <img src="https://placehold.co/128x128/DC2626/FFFFFF?text=RM" alt="Foto de Perfil" class="w-32 h-32 rounded-full mx-auto mb-6 border-4 shadow-xl" style="border-color: var(--text-secondary);">
+                <h1 class="text-5xl md:text-8xl font-black mb-4 tracking-tighter" style="color: var(--text-primary);">
+                    Rúben <span style="color: var(--text-secondary);">Mendoza</span>
+                </h1>
+                <p class="text-xl md:text-3xl font-light text-gray-400 mb-10">
+                    Ingeniero Mecánico | Diseño CAD | Análisis FEM | Simulación de Procesos
+                </p>
+                <div class="flex justify-center space-x-4">
+                    <button id="botonSuscribir" class="py-3 px-8 rounded-lg font-semibold border-2 text-white bg-red-600 hover:bg-red-700 border-red-700 transition duration-300 shadow-lg">
+                        Suscribirse al Newsletter
+                    </button>
+                    <button id="abrirModal" class="py-3 px-8 rounded-lg font-semibold border-2 border-gray-600 hover:bg-gray-700 transition duration-300">
+                        Ver CV
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Sobre Mí (con icono) -->
+        <section id="sobre-mi" class="py-16 border-t" style="border-color: var(--border-color);">
+            <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center" style="color: var(--text-secondary);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+                Sobre Mí
+            </h2>
+            <div class="max-w-4xl mx-auto text-lg space-y-4 text-gray-300">
+                <p>Especializado en la optimización de sistemas termodinámicos y el diseño asistido por computadora (CAD). Mi enfoque se centra en aplicar principios de ingeniería para resolver desafíos de eficiencia energética y durabilidad de materiales.</p>
+                <p>He trabajado en proyectos que van desde la simulación de flujo de fluidos (CFD) hasta el desarrollo de prototipos para la industria automotriz, utilizando herramientas como SolidWorks, ANSYS y MATLAB.</p>
+            </div>
+        </section>
+        
+        <!-- --- NUEVA SECCIÓN: EXPERIENCIA (Cronología) --- -->
+        <section id="experiencia" class="py-16 border-t" style="border-color: var(--border-color);">
+            <h2 class="text-3xl font-bold mb-10 text-center flex items-center justify-center" style="color: var(--text-secondary);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Experiencia y Trayectoria
+            </h2>
+            <div class="max-w-3xl mx-auto timeline">
+                <!-- Item 1: Experiencia Laboral -->
+                <div class="timeline-item">
+                    <h3 class="text-xl font-semibold">Ingeniero de Análisis Estructural</h3>
+                    <p class="text-sm text-gray-400 mb-1">AeroDynamics S.A. | Enero 2022 - Presente</p>
+                    <p class="text-gray-300">Responsable de realizar simulaciones FEM en componentes de turbinas, reduciendo la masa crítica en un 12% sin comprometer la seguridad. Lideré el equipo de validación de materiales compuestos.</p>
+                </div>
+                
+                <!-- Item 2: Prácticas/Internship -->
+                <div class="timeline-item">
+                    <h3 class="text-xl font-semibold">Intern en I+D de Vehículos Eléctricos</h3>
+                    <p class="text-sm text-gray-400 mb-1">Innovate Auto Corp. | Verano 2021</p>
+                    <p class="text-gray-300">Desarrollé modelos CFD para optimizar el sistema de refrigeración de baterías, mejorando la gestión térmica en condiciones extremas.</p>
+                </div>
+                
+                <!-- Item 3: Educación -->
+                <div class="timeline-item">
+                    <h3 class="text-xl font-semibold">Grado en Ingeniería Mecánica</h3>
+                    <p class="text-sm text-gray-400 mb-1">Universidad Nacional Autónoma | 2017 - 2021</p>
+                    <p class="text-gray-300">Especialización en Termofluidos. Tesis de honor sobre energía solar concentrada.</p>
+                </div>
+            </div>
+        </section>
+        <!-- --- FIN SECCIÓN EXPERIENCIA --- -->
+
+
+        <!-- --- SECCIÓN: HABILIDADES TÉCNICAS Y BLANDAS (BARRAS Y RADAR) --- -->
+        <section id="habilidades" class="py-16 border-t" style="border-color: var(--border-color);">
+            <h2 class="text-3xl font-bold mb-10 text-center flex items-center justify-center" style="color: var(--text-secondary);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+                Habilidades (Hard & Soft)
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- COLUMNA 1: HABILIDADES Duras (Barras de Progreso) -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-semibold mb-4 text-center">Habilidades Técnicas (Hard)</h3>
+                    <!-- Habilidad 1: CAD 3D (SolidWorks, Inventor) -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold">Diseño CAD (SolidWorks)</span>
+                            <span class="text-sm font-medium" style="color: var(--text-secondary);">95%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 95%;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Habilidad 2: Análisis por Elementos Finitos (ANSYS) -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold">Análisis FEM (ANSYS)</span>
+                            <span class="text-sm font-medium" style="color: var(--text-secondary);">85%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 85%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Habilidad 3: Dinámica de Fluidos Computacional (CFD) -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold">Simulación CFD</span>
+                            <span class="text-sm font-medium" style="color: var(--text-secondary);">70%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 70%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Habilidad 4: Programación y Control (MATLAB/Python) -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold">Programación (MATLAB/Python)</span>
+                            <span class="text-sm font-medium" style="color: var(--text-secondary);">80%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA 2: HABILIDADES Blandas (Gráfico Radar SVG) -->
+                <div class="flex flex-col items-center">
+                    <h3 class="text-2xl font-semibold mb-4 text-center">Habilidades Blandas (Soft)</h3>
+                    <div class="w-full max-w-xs md:max-w-md p-4 rounded-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                        <!-- SVG del Gráfico Radar -->
+                        <svg id="radar-chart" viewBox="0 0 100 100" class="w-full h-auto">
+                            <!-- Marco de referencia (5 puntos: centro, exterior) -->
+                            <polygon points="50,10 93.3,42 77.3,90 22.7,90 6.7,42" fill="none" stroke="var(--border-color)" stroke-width="0.5"/>
+                            <circle cx="50" cy="50" r="10" fill="var(--border-color)"/>
+
+                            <!-- Los 5 puntos son: 
+                                1. Liderazgo (50, 10) - Arriba
+                                2. Comunicación (93.3, 42) - Superior derecha
+                                3. Trabajo en Equipo (77.3, 90) - Inferior derecha
+                                4. Resolución de Problemas (22.7, 90) - Inferior izquierda
+                                5. Gestión de Tiempo (6.7, 42) - Superior izquierda
+                            -->
+
+                            <!-- Puntos de Datos (Ejemplo: Liderazgo 80, Comunicación 90, Equipo 90, Problemas 85, Tiempo 75) -->
+                            <!-- Coordenadas calculadas en base a un 80% del radio total (85-10=75) -->
+                            <!-- PUNTOS: (50, 10), (93.3, 42), (77.3, 90), (22.7, 90), (6.7, 42) -->
+                            
+                            <!-- 1. Liderazgo (80%): 50, 25 -->
+                            <!-- 2. Comunicación (90%): 88.97, 42.64 -->
+                            <!-- 3. Trabajo en Equipo (90%): 74.57, 86.8 -->
+                            <!-- 4. Res. Problemas (85%): 25.43, 86.8 -->
+                            <!-- 5. Gestión de Tiempo (75%): 11.03, 42.64 -->
+                            
+                            <polygon points="50,25 88.97,42.64 74.57,86.8 25.43,86.8 11.03,42.64" 
+                                     fill="var(--text-secondary)" 
+                                     fill-opacity="0.6" 
+                                     stroke="var(--text-secondary)" 
+                                     stroke-width="1"/>
+                            
+                            <!-- Etiquetas -->
+                            <text x="50" y="5" text-anchor="middle" font-size="5" fill="var(--text-primary)" font-weight="bold">Liderazgo</text>
+                            <text x="98" y="44" text-anchor="end" font-size="5" fill="var(--text-primary)" font-weight="bold">Comunicación</text>
+                            <text x="80" y="98" text-anchor="middle" font-size="5" fill="var(--text-primary)" font-weight="bold">Trabajo en Equipo</text>
+                            <text x="20" y="98" text-anchor="middle" font-size="5" fill="var(--text-primary)" font-weight="bold">Res. Problemas</text>
+                            <text x="2" y="44" text-anchor="start" font-size="5" fill="var(--text-primary)" font-weight="bold">Gestión de Tiempo</text>
+
+                        </svg>
+                        <p class="text-xs text-center text-gray-500 mt-2">Gráfico de Habilidades Blandas (ejemplo: 5 puntos)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- --- FIN SECCIÓN HABILIDADES --- -->
+
+        <!-- Sección Proyectos (con icono) -->
+        <section id="proyectos" class="py-16 border-t" style="border-color: var(--border-color);">
+            <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center" style="color: var(--text-secondary);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h7l7 7V3h7"/><path d="M17 17L3 3M17 17l-7 7"/></svg>
+                Proyectos Clave
+            </h2>
+            <!-- Ejemplo de Tarjeta de Proyecto (Mantenida) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                    <h3 class="text-xl font-semibold mb-2">Análisis de Estrés Térmico en Turbinas</h3>
+                    <p class="text-gray-400 mb-4 text-sm">Uso de ANSYS y elementos finitos (FEM) para modelar y reducir las fallas por fatiga térmica en álabes de turbinas de gas.</p>
+                    <span class="inline-block py-1 px-3 text-xs font-medium rounded-full bg-red-800 text-red-200">FEM</span>
+                    <span class="inline-block py-1 px-3 text-xs font-medium rounded-full bg-blue-800 text-blue-200">ANSYS</span>
+                </div>
+                <!-- Añade otro proyecto de ejemplo para rellenar -->
+                <div class="p-6 rounded-xl shadow-lg hover:shadow-2xl transition duration-300" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                    <h3 class="text-xl font-semibold mb-2">Optimización de Intercambiadores de Calor</h3>
+                    <p class="text-gray-400 mb-4 text-sm">Diseño de una nueva geometría de aletas para aumentar la eficiencia de transferencia térmica en un 15% mediante simulación CFD.</p>
+                    <span class="inline-block py-1 px-3 text-xs font-medium rounded-full bg-indigo-800 text-indigo-200">CFD</span>
+                    <span class="inline-block py-1 px-3 text-xs font-medium rounded-full bg-green-800 text-green-200">Diseño CAD</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- --- SECCIÓN DE CALCULADORA (con icono) --- -->
+        <section id="calculadora" class="py-16 border-t" style="border-color: var(--border-color);">
+            <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center" style="color: var(--text-secondary);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 8.4l-.8 4.8-.8 4.8H3.2l-.8-4.8-.8-4.8L4.8 3h14.4l1.2 5.4z"/><path d="M8 12h8"/><path d="M12 16V8"/></svg>
+                Calculadora de Esfuerzo ($\sigma$)
+            </h2>
+            <div class="max-w-md mx-auto p-6 rounded-xl shadow-xl space-y-4" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                <p class="text-gray-400 mb-4 text-sm">Calcula la tensión o esfuerzo normal ($\sigma$) dada una Fuerza ($F$) y un Área ($A$).</p>
+                
+                <!-- Campo Fuerza -->
+                <div>
+                    <label for="fuerzaInput" class="block text-sm font-medium mb-1">Fuerza Aplicada (N)</label>
+                    <input type="number" id="fuerzaInput" placeholder="Ej: 5000"
+                           class="w-full p-3 rounded-lg text-sm"
+                           style="background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                </div>
+
+                <!-- Campo Área -->
+                <div>
+                    <label for="areaInput" class="block text-sm font-medium mb-1">Área Transversal ($m^2$)</label>
+                    <input type="number" id="areaInput" placeholder="Ej: 0.05"
+                           class="w-full p-3 rounded-lg text-sm"
+                           style="background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);">
+                </div>
+
+                <!-- Botón de Cálculo -->
+                <button id="calcularBtn"
+                        class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-150 shadow-md mt-4">
+                    Calcular Tensión ($\sigma = F/A$)
+                </button>
+
+                <!-- Resultado -->
+                <div class="pt-4 border-t mt-4" style="border-color: var(--border-color);">
+                    <p class="text-lg font-semibold">Resultado de Tensión (σ):</p>
+                    <p id="resultadoTension" class="text-2xl font-extrabold mt-1" style="color: var(--text-secondary);">0.00 Pa</p>
+                </div>
+            </div>
+        </section>
+        <!-- --- FIN SECCIÓN DE CALCULADORA --- -->
+        
+        <!-- --- SECCIÓN DE CONTACTO (con icono) --- -->
+        <section id="contacto" class="py-16 border-t" style="border-color: var(--border-color);">
+            <h2 class="text-3xl font-bold mb-8 text-center flex items-center justify-center" style="color: var(--text-secondary);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17H2l.8-4.8c.3-2.1 1.7-4.3 4-5.3 2.1-.9 4.3-1 6.4-.1 2 1 3.4 3.2 3.7 5.3l.8 4.8z"/><path d="M12 21v-4m0-4V9"/></svg>
+                Contacto Directo
+            </h2>
+            
+            <div class="max-w-lg mx-auto">
+                <!-- FORMULARIO DE CONTACTO Y VALIDACIÓN COMPLETA -->
+                <form id="contact-form" class="flex flex-col gap-3 p-6 rounded-xl shadow-xl" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+                    
+                    <p class="text-gray-400 mb-2 text-sm">¿Tienes una oferta de trabajo o colaboración? Envíame un mensaje.</p>
+
+                    <!-- Campo de Nombre (Regla: No Vacío) -->
+                    <div class="flex flex-col">
+                        <input type="text" id="name-input" placeholder="Tu Nombre Completo"
+                               class="p-3 rounded-lg text-sm focus:ring-red-500 focus:border-red-500" 
+                               style="background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);" required>
+                        <!-- SPAN DE ERROR PARA EL NOMBRE -->
+                        <span id="error-name-empty" class="error-span font-medium"></span>
+                    </div>
+
+                    <!-- Campo de Email (Regla: Contiene '@') -->
+                    <div class="flex flex-col">
+                        <input type="text" id="email-input" placeholder="Tu Correo Electrónico"
+                               class="p-3 rounded-lg text-sm focus:ring-red-500 focus:border-red-500" 
+                               style="background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);" required>
+                        <!-- SPAN DE ERROR PARA EL EMAIL -->
+                        <span id="error-email-format" class="error-span font-medium"></span>
+                    </div>
+
+                    <!-- Campo de Mensaje (Regla: Longitud Mínima 10) -->
+                    <div class="flex flex-col">
+                        <textarea id="message-input" placeholder="Escribe tu mensaje (Mínimo 10 caracteres)"
+                                  class="p-3 rounded-lg text-sm resize-y focus:ring-red-500 focus:border-red-500" rows="4" 
+                                  style="background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary);" required></textarea>
+                        <!-- SPAN DE ERROR PARA EL MENSAJE -->
+                        <span id="error-message-length" class="error-span font-medium"></span>
+                    </div>
+                    
+                    <button type="submit" id="contact-submit-button"
+                            class="bg-red-600 text-white p-3 rounded-lg font-semibold hover:bg-red-700 transition duration-150 shadow-md mt-2"
+                            style="background-color: var(--text-secondary); border: 1px solid var(--text-secondary);">
+                        Enviar Mensaje
+                    </button>
+                </form>
+
+                <!-- MENSAJE DE ÉXITO DE CONTACTO (verde) - Global Message Box -->
+                <!-- Este mensaje aparecerá cuando el envío sea exitoso -->
+                <p id="contact-success-message" class="message-box bg-green-900 text-green-300 rounded-lg text-sm font-medium border border-green-700">
+                    ✅ ¡Mensaje enviado! Me pondré en contacto contigo pronto.
+                </p>
+            </div>
+        </section>
+        <!-- --- FIN SECCIÓN DE CONTACTO --- -->
+
+
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="py-8 mt-12 text-center text-gray-500 border-t" style="border-color: var(--border-color);">
+        <p>© 2025 Rúben Mendoza. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- Modal para el CV (Inicialmente oculto) -->
+    <div id="ventanaModal" class="ventana-modal fixed inset-0 flex items-center justify-center z-50">
+        <div class="modal-contenido w-11/12 md:w-1/2 p-6 rounded-xl shadow-2xl relative">
+            <button id="cerrarModal" class="cerrar-modal absolute top-3 right-3 text-gray-500 hover:text-gray-300 text-2xl font-bold transition duration-200">&times;</button>
+            <h3 class="text-2xl font-bold mb-4" style="color: var(--text-secondary);">Currículum Vitae (CV)</h3>
+            <p class="text-gray-400">Aquí se cargaría el PDF o el contenido detallado del CV de Ingeniería Mecánica.</p>
+            <p class="mt-4 text-sm">*(Esto es un contenido de ejemplo)*</p>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // =======================================================
+            // LÓGICA DE INDICADOR DE SCROLL (NUEVO)
+            // =======================================================
+            const scrollProgress = document.getElementById('scroll-progress');
+            
+            function updateScrollProgress() {
+                const totalHeight = document.body.scrollHeight - window.innerHeight;
+                const scrollPosition = window.scrollY;
+                const progress = (scrollPosition / totalHeight) * 100;
+                
+                // Asegurar que el ancho es 0 si estamos al inicio y 100 si estamos al final
+                scrollProgress.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+            }
+
+            // Añadir listener para actualizar el progreso al hacer scroll
+            window.addEventListener('scroll', updateScrollProgress);
+            // Llamar al inicio para establecer la posición inicial
+            updateScrollProgress();
+
+            // =======================================================
+            // LÓGICA DE DESPLAZAMIENTO SUAVE
+            // =======================================================
+            // Seleccionar todos los enlaces de navegación que contienen un hash (#)
+            const navLinks = document.querySelectorAll('#main-nav a[href^="#"]');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // Detener el comportamiento de salto predeterminado
+
+                    const targetId = this.getAttribute('href'); // Obtener el ID del destino (ej: #sobre-mi o #hero)
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // Calcular la posición para compensar el header fijo
+                        const headerHeight = document.querySelector('header').offsetHeight;
+                        const targetPosition = targetElement.offsetTop - headerHeight - 10; // 10px de margen
+
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+
+            // =======================================================
+            // LÓGICA DE MODO OSCURO/CLARO
+            // =======================================================
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            const moonIcon = document.getElementById('moon-icon');
+            const sunIcon = document.getElementById('sun-icon');
+
+            function cargarTema() {
+                const isLight = localStorage.getItem('theme') === 'light';
+                body.classList.toggle('light-mode', isLight);
+                moonIcon.classList.toggle('hidden', isLight);
+                sunIcon.classList.toggle('hidden', !isLight);
+            }
+
+            function alternarTema() {
+                const isLight = body.classList.toggle('light-mode');
+                localStorage.setItem('theme', isLight ? 'light' : 'dark');
+                moonIcon.classList.toggle('hidden', isLight);
+                sunIcon.classList.toggle('hidden', !isLight);
+            }
+
+            cargarTema();
+            if (themeToggle) {
+                themeToggle.addEventListener('click', alternarTema);
+            }
+
+            // =======================================================
+            // LÓGICA DE MODAL
+            // =======================================================
+            const abrirModal = document.getElementById('abrirModal');
+            const cerrarModalBtn = document.getElementById('cerrarModal');
+            const ventanaModal = document.getElementById('ventanaModal');
+
+            function abrirModalHandler() {
+                if (ventanaModal) {
+                    ventanaModal.classList.add('abierto');
+                }
+            }
+
+            function cerrarModal() {
+                if (ventanaModal) {
+                    ventanaModal.classList.remove('abierto');
+                }
+            }
+
+            if (abrirModal) {
+                abrirModal.addEventListener('click', abrirModalHandler);
+            }
+            if (cerrarModalBtn) {
+                cerrarModalBtn.addEventListener('click', cerrarModal);
+            }
+            if (ventanaModal) {
+                ventanaModal.addEventListener('click', (e) => {
+                    if (e.target === ventanaModal) {
+                        cerrarModal();
+                    }
+                });
+            }
+
+
+            // =======================================================
+            // LÓGICA DE SUSCRIPCIÓN
+            // =======================================================
+
+            const botonSuscribir = document.getElementById('botonSuscribir');
+            
+            function alternarSuscripcion() {
+                // Comprueba si ya está suscrito
+                if (botonSuscribir.classList.contains('suscrito')) {
+                    // DESUSCRIBIRSE
+                    botonSuscribir.textContent = 'Suscribirse al Newsletter';
+                    botonSuscribir.classList.remove('suscrito');
+                    // Restaurar clases originales
+                    botonSuscribir.classList.add('bg-red-600', 'hover:bg-red-700', 'border-red-700');
+                    botonSuscribir.classList.remove('bg-gray-700', 'hover:bg-gray-600', 'border-gray-600');
+                } else {
+                    // SUSCRIBIRSE
+                    botonSuscribir.textContent = 'Suscrito ✓';
+                    botonSuscribir.classList.add('suscrito');
+                    // Eliminar clases originales que entran en conflicto con .suscrito
+                    botonSuscribir.classList.remove('bg-red-600', 'hover:bg-red-700', 'border-red-700');
+                }
+            }
+
+            if (botonSuscribir) {
+                botonSuscribir.addEventListener('click', alternarSuscripcion);
+            }
+            
+            // =======================================================
+            // LÓGICA DE CALCULADORA DE ESFUERZO
+            // =======================================================
+
+            const fuerzaInput = document.getElementById('fuerzaInput');
+            const areaInput = document.getElementById('areaInput');
+            const resultadoTension = document.getElementById('resultadoTension');
+            const calcularBtn = document.getElementById('calcularBtn');
+
+            function calcularTension() {
+                const F = parseFloat(fuerzaInput.value);
+                const A = parseFloat(areaInput.value);
+
+                // Validation
+                if (isNaN(F) || isNaN(A) || A <= 0) {
+                    resultadoTension.textContent = 'Error: Ingresa valores válidos.';
+                    return;
+                }
+
+                // Calculation: Stress (σ) = Force (F) / Area (A)
+                const tension = F / A;
+                
+                // Display result, limiting to 4 decimal places
+                resultadoTension.textContent = `${tension.toFixed(4)} Pa`;
+            }
+
+            if (calcularBtn) {
+                calcularBtn.addEventListener('click', calcularTension);
+            }
+
+
+            // =======================================================
+            // LÓGICA DE VALIDACIÓN DE FORMULARIO DE CONTACTO
+            // =======================================================
+
+            const MIN_MESSAGE_LENGTH = 10; 
+
+            // Referencias del FORMULARIO DE CONTACTO
+            const contactForm = document.getElementById('contact-form');
+            const nameInput = document.getElementById('name-input');
+            const emailInput = document.getElementById('email-input');
+            const messageInput = document.getElementById('message-input'); 
+            const contactSuccessMessage = document.getElementById('contact-success-message'); 
+            
+            // Referencias a los SPAN de error contextual
+            const errorNameEmptySpan = document.getElementById('error-name-empty'); 
+            const errorEmailFormatSpan = document.getElementById('error-email-format');
+            const errorMsgLengthSpan = document.getElementById('error-message-length'); 
+
+            // Variable global para manejar el tiempo de espera de mensajes
+            let errorTimeout; 
+
+            /**
+             * Oculta todos los spans de error contextual.
+             */
+            function hideAllContextualErrors() {
+                 [errorNameEmptySpan, errorEmailFormatSpan, errorMsgLengthSpan].forEach(span => {
+                    span.style.display = 'none';
+                    span.textContent = ''; // Limpiar contenido
+                 });
+            }
+
+            /**
+             * Muestra mensajes de éxito globales con un temporizador.
+             */
+            function showUIMessage(messageElement, duration = 4000) {
+                // OCULTAR TODOS LOS SPANS CONTEXTUALES ANTES DE MOSTRAR UN MENSAJE GLOBAL
+                hideAllContextualErrors();
+
+                contactSuccessMessage.classList.remove('visible'); 
+
+                clearTimeout(errorTimeout); 
+
+                messageElement.classList.add('visible');
+
+                errorTimeout = setTimeout(() => {
+                    messageElement.classList.remove('visible');
+                }, duration);
+            }
+
+            // --- EVENT LISTENER para el Formulario de Contacto ---
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    
+                    e.preventDefault(); // Interceptar el envío
+
+                    // 1. Ocultar todos los errores contextuales antes de validar
+                    hideAllContextualErrors();
+
+                    const nameValue = nameInput.value.trim();
+                    const emailValue = emailInput.value.trim();
+                    const messageValue = messageInput.value.trim();
+                    
+                    let isValid = true; // Variable de control
+
+                    // 2. VALIDACIÓN 1: Nombre no vacío
+                    if (nameValue === '') {
+                        errorNameEmptySpan.textContent = 'El nombre es obligatorio.';
+                        errorNameEmptySpan.style.display = 'block';
+                        isValid = false;
+                    }
+
+                    // 3. VALIDACIÓN 2: Email contiene '@'
+                    if (!emailValue.includes('@')) {
+                        errorEmailFormatSpan.textContent = 'Debe ser un email válido (contener "@").';
+                        errorEmailFormatSpan.style.display = 'block';
+                        isValid = false;
+                    }
+
+                    // 4. VALIDACIÓN 3: Longitud mínima del mensaje
+                    if (messageValue.length < MIN_MESSAGE_LENGTH) {
+                        errorMsgLengthSpan.textContent = `El mensaje debe tener al menos ${MIN_MESSAGE_LENGTH} caracteres.`;
+                        errorMsgLengthSpan.style.display = 'block';
+                        isValid = false;
+                    }
+
+                    // 5. VALIDACIÓN COMPLETA
+                    if (!isValid) {
+                        console.warn("Validación fallida. Favor de corregir los campos.");
+                        // Si alguna validación falló, detenemos la función
+                        return; 
+                    }
+
+                    // Si todas las validaciones son exitosas:
+                    console.log("¡Formulario enviado con éxito!");
+                    console.log("Datos:", { name: nameValue, email: emailValue, message: messageValue });
+
+                    // Mostrar mensaje de éxito global
+                    showUIMessage(contactSuccessMessage);
+
+                    // Limpiar formulario (Simular éxito de envío)
+                    contactForm.reset(); 
+                });
+            }
+
+        });
+    </script>
+</body>
+</html>
